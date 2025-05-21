@@ -2,6 +2,7 @@ package com.aim.advice.config;
 
 import com.aim.advice.security.JwtAuthenticationFilter;
 import com.aim.advice.security.JwtUtil;
+import com.aim.advice.security.RestAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,6 +31,9 @@ public class WebSecurityConfig {
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .sessionManagement(sm ->
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
