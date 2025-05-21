@@ -1,0 +1,44 @@
+# IDEA, Eclipse 등 개발툴 관련
+/.idea/
+/.vscode/
+*.iml
+
+# 빌드 파일 (Spring Boot, Kotlin, Java)
+/build/
+/target/
+*.jar
+*.war
+*.class
+
+# 환경 변수 파일
+.env
+secrets/
+
+# Docker 관련
+*.log
+docker-compose.override.yml
+.dockerignore
+.vscode/settings.json
+
+# Docker 볼륨 데이터
+/volumes/
+/data/
+
+# Gradle 관련 파일 제외
+/.gradle/
+/out/
+
+# Git에 포함할 Gradle Wrapper 파일
+!gradlew
+!gradlew.bat
+!gradle/wrapper/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 테스트 / 스프링 부트
+/spring.log
+/log/
