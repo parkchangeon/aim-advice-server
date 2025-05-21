@@ -48,6 +48,28 @@ class BalanceControllerTest extends ControllerTestSupport {
     }
 
     @Test
+    @DisplayName("입금할 때 로그인은 필수이다.")
+    void depositWithLogin() throws Exception {
+        // given
+        BalanceRequest request = BalanceRequest.of(null);
+        when(balanceService.deposit(anyString(), any(BigDecimal.class)))
+                .thenReturn(request.getAmount());
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/balance/deposit")
+                                .with(csrf())
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value(401))
+                .andExpect(jsonPath("$.status").value("UNAUTHORIZED"))
+                .andExpect(jsonPath("$.message").value("Login is required"));
+    }
+
+    @Test
     @DisplayName("금액을 받아 입금할 때 금액은 필수이다.")
     @WithMockUser(username = "user1")
     void depositWithAmount() throws Exception {
@@ -97,8 +119,10 @@ class BalanceControllerTest extends ControllerTestSupport {
     @DisplayName("금액을 받아 출금한다.")
     @WithMockUser(username = "user1")
     void withdraw() throws Exception {
+        // given
         BalanceRequest request = BalanceRequest.of(new BigDecimal("150.00"));
 
+        // when // then
         mockMvc.perform(post("/api/v1/balance/withdraw")
                         .with(csrf())
                         .content(objectMapper.writeValueAsString(request))
@@ -108,6 +132,26 @@ class BalanceControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"));
+    }
+
+    @Test
+    @DisplayName("출금할 때 로그인은 필수이다.")
+    void withdrawWithLogin() throws Exception {
+        // given
+        BalanceRequest request = BalanceRequest.of(new BigDecimal("150.00"));
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/balance/withdraw")
+                                .with(csrf())
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value(401))
+                .andExpect(jsonPath("$.status").value("UNAUTHORIZED"))
+                .andExpect(jsonPath("$.message").value("Login is required"));
     }
 
     @Test
