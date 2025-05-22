@@ -17,6 +17,8 @@ public class LoginResponse {
     }
 
     public static LoginResponse of(String token) {
-        return new LoginResponse(token);
+        return LoginResponse.builder()
+                .token(token)
+                .build();
     }
 }
