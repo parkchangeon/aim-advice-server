@@ -38,6 +38,7 @@ public class ApiControllerAdvice {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<Void> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
-        return ApiResponse.of(HttpStatus.BAD_REQUEST, "Required request body is missing", null);
+        return ApiResponse.of(HttpStatus.BAD_REQUEST, "The request body is missing or malformed", null);
+    }
     }
 }
