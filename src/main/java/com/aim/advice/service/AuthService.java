@@ -1,6 +1,6 @@
 package com.aim.advice.service;
 
-import com.aim.advice.domain.AuthHistory;
+import com.aim.advice.domain.auth.AuthHistory;
 import com.aim.advice.dto.auth.LoginRequest;
 import com.aim.advice.dto.auth.LoginResponse;
 import com.aim.advice.repository.AuthHistoryRepository;

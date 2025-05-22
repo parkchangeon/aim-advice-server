@@ -1,6 +1,6 @@
 package com.aim.advice.repository;
 
-import com.aim.advice.domain.BalanceHistory;
+import com.aim.advice.domain.balance.BalanceHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

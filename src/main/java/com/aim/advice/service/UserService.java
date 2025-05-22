@@ -1,6 +1,6 @@
 package com.aim.advice.service;
 
-import com.aim.advice.domain.User;
+import com.aim.advice.domain.user.User;
 import com.aim.advice.dto.user.SignupRequest;
 import com.aim.advice.dto.user.SignupResponse;
 import com.aim.advice.repository.UserRepository;

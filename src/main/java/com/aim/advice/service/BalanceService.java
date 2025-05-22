@@ -1,7 +1,7 @@
 package com.aim.advice.service;
 
-import com.aim.advice.domain.BalanceHistory;
-import com.aim.advice.domain.User;
+import com.aim.advice.domain.balance.BalanceHistory;
+import com.aim.advice.domain.user.User;
 import com.aim.advice.repository.BalanceHistoryRepository;
 import com.aim.advice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
-import static com.aim.advice.domain.TransactionType.DEPOSIT;
-import static com.aim.advice.domain.TransactionType.WITHDRAWAL;
+import static com.aim.advice.domain.balance.TransactionType.DEPOSIT;
+import static com.aim.advice.domain.balance.TransactionType.WITHDRAWAL;
 
 @Service
 @RequiredArgsConstructor

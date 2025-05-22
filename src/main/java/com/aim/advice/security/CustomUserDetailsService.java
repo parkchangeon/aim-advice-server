@@ -1,6 +1,6 @@
 package com.aim.advice.security;
 
-import com.aim.advice.domain.User;
+import com.aim.advice.domain.user.User;
 import com.aim.advice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
