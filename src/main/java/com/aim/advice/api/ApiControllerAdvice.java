@@ -1,6 +1,7 @@
 package com.aim.advice.api;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -34,4 +35,9 @@ public class ApiControllerAdvice {
         return ApiResponse.of(HttpStatus.BAD_REQUEST, e.getMessage(), null);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<Void> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
+        return ApiResponse.of(HttpStatus.BAD_REQUEST, "Required request body is missing", null);
+    }
 }
