@@ -46,7 +46,10 @@ public class WebSecurityConfig {
                                 "/api/v1/auth/logout",
                                 "/h2-console/**"
                         ).permitAll()
-                        .requestMatchers("/api/v1/balance/**").authenticated()
+                        .requestMatchers(
+                                "/api/v1/balance/**",
+                                "/api/v1/advice/**"
+                        ).authenticated()
                         .anyRequest().denyAll()
                 )
                 .exceptionHandling(ex -> ex
