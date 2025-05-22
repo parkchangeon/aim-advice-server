@@ -20,8 +20,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ApiResponse<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        LoginResponse resp = authService.login(request);
-        return ApiResponse.ok(resp);
+        LoginResponse loginResponse = authService.login(request);
+        return ApiResponse.ok(loginResponse);
     }
 
     @PostMapping("/logout")

@@ -1,37 +1,37 @@
 package com.aim.advice.service;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import lombok.RequiredArgsConstructor;
-
-import com.aim.advice.repository.UserRepository;
-import com.aim.advice.repository.AuthHistoryRepository;
-import com.aim.advice.security.JwtUtil;
+import com.aim.advice.domain.AuthHistory;
 import com.aim.advice.dto.auth.LoginRequest;
 import com.aim.advice.dto.auth.LoginResponse;
-import com.aim.advice.domain.User;
-import com.aim.advice.domain.AuthHistory;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.aim.advice.repository.AuthHistoryRepository;
+import com.aim.advice.security.JwtUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final UserRepository userRepository;
     private final AuthHistoryRepository authHistoryRepository;
-    private final PasswordEncoder pwdEncoder;
     private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
 
     @Transactional
     public LoginResponse login(LoginRequest request) {
-        User user = userRepository.findByUserId(request.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
-        if (!pwdEncoder.matches(request.getPassword(), user.getPassword())) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUserId(), request.getPassword())
+            );
+            String token = jwtUtil.generateToken(authentication.getName());
+            authHistoryRepository.save(AuthHistory.of(authentication.getName(), "LOGIN"));
+            return LoginResponse.of(token);
+        } catch (AuthenticationException e) {
             throw new IllegalArgumentException("Invalid credentials");
         }
-        String token = jwtUtil.generateToken(user.getUserId());
-        authHistoryRepository.save(AuthHistory.of(user.getUserId(), "LOGIN"));
-        return LoginResponse.of(token);
     }
 
     @Transactional
