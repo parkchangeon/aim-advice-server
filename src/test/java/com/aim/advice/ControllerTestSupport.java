@@ -1,10 +1,12 @@
 package com.aim.advice;
 
 import com.aim.advice.config.WebSecurityConfig;
+import com.aim.advice.controller.AdviceController;
 import com.aim.advice.controller.AuthController;
 import com.aim.advice.controller.BalanceController;
 import com.aim.advice.controller.UserController;
 import com.aim.advice.security.JwtUtil;
+import com.aim.advice.service.AdviceService;
 import com.aim.advice.service.AuthService;
 import com.aim.advice.service.BalanceService;
 import com.aim.advice.service.UserService;
@@ -18,7 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(controllers = {
         UserController.class,
         AuthController.class,
-        BalanceController.class
+        BalanceController.class,
+        AdviceController.class
 })
 @Import(WebSecurityConfig.class)
 public abstract class ControllerTestSupport {
@@ -30,6 +33,9 @@ public abstract class ControllerTestSupport {
     protected ObjectMapper objectMapper;
 
     @MockitoBean
+    protected JwtUtil jwtUtil;
+
+    @MockitoBean
     protected UserService userService;
 
     @MockitoBean
@@ -39,5 +45,6 @@ public abstract class ControllerTestSupport {
     protected BalanceService balanceService;
 
     @MockitoBean
-    protected JwtUtil jwtUtil;
+    protected AdviceService adviceService;
+
 }
