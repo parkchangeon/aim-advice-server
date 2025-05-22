@@ -1,22 +1,21 @@
 package com.aim.advice.service;
 
 import com.aim.IntegrationTestSupport;
-import com.aim.advice.domain.BalanceHistory;
-import com.aim.advice.domain.User;
-import com.aim.advice.domain.TransactionType;
+import com.aim.advice.domain.balance.BalanceHistory;
+import com.aim.advice.domain.balance.TransactionType;
+import com.aim.advice.domain.user.User;
 import com.aim.advice.repository.BalanceHistoryRepository;
 import com.aim.advice.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@Transactional
 class BalanceServiceTest extends IntegrationTestSupport {
 
     @Autowired
@@ -29,7 +28,7 @@ class BalanceServiceTest extends IntegrationTestSupport {
     private BalanceHistoryRepository balanceHistoryRepository;
 
     @Test
-    @DisplayName("주어진 금액만큼 잔액이 증가하고 히스토리가 저장된다.")
+    @DisplayName("입금할 때 주어진 금액만큼 잔액이 증가하고 히스토리가 저장된다.")
     void deposit() {
         // given
         userRepository.save(User.of("user1", "pass123"));
@@ -51,7 +50,7 @@ class BalanceServiceTest extends IntegrationTestSupport {
         assertThat(history.getType()).isEqualTo(TransactionType.DEPOSIT);
         assertThat(history.getAmount()).isEqualByComparingTo(depositAmount);
     }
-    
+
     @Test
     @DisplayName("user가 존재하지 않을 때 IllegalArgumentException이 발생한다.")
     void depositWithNoUser() {
@@ -84,7 +83,6 @@ class BalanceServiceTest extends IntegrationTestSupport {
         assertThat(history.getType()).isEqualTo(TransactionType.WITHDRAWAL);
         assertThat(history.getAmount()).isEqualByComparingTo(withdrawAmount);
     }
-
 
 
     @Test

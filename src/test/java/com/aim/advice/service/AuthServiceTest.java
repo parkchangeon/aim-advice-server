@@ -1,11 +1,8 @@
 package com.aim.advice.service;
 
 import com.aim.IntegrationTestSupport;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.aim.advice.domain.AuthHistory;
-import com.aim.advice.domain.User;
+import com.aim.advice.domain.auth.AuthHistory;
+import com.aim.advice.domain.user.User;
 import com.aim.advice.dto.auth.LoginRequest;
 import com.aim.advice.dto.auth.LoginResponse;
 import com.aim.advice.repository.AuthHistoryRepository;
@@ -13,15 +10,14 @@ import com.aim.advice.repository.UserRepository;
 import com.aim.advice.security.JwtUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-@Transactional
-class AuthServiceTest extends IntegrationTestSupport{
+class AuthServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private UserRepository userRepository;
