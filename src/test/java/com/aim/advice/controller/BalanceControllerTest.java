@@ -70,6 +70,23 @@ class BalanceControllerTest extends ControllerTestSupport {
     }
 
     @Test
+    @DisplayName("입금할 때 request body가 아예 없는 경우 입금할 수 없다.")
+    @WithMockUser(username = "user1")
+    void depositWithRequestBody() throws Exception {
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/balance/deposit")
+                                .with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("Required request body is missing"));
+    }
+
+    @Test
     @DisplayName("금액을 받아 입금할 때 금액은 필수이다.")
     @WithMockUser(username = "user1")
     void depositWithAmount() throws Exception {
@@ -152,6 +169,23 @@ class BalanceControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.code").value(401))
                 .andExpect(jsonPath("$.status").value("UNAUTHORIZED"))
                 .andExpect(jsonPath("$.message").value("Login is required"));
+    }
+
+    @Test
+    @DisplayName("출금할 때 request body가 아예 없는 경우 출금할 수 없다.")
+    @WithMockUser(username = "user1")
+    void withdrawWithRequestBody() throws Exception {
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/balance/withdraw")
+                                .with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("Required request body is missing"));
     }
 
     @Test
