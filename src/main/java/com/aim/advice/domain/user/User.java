@@ -1,5 +1,6 @@
-package com.aim.advice.domain;
+package com.aim.advice.domain.user;
 
+import com.aim.advice.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

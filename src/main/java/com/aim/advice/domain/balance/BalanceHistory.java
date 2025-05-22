@@ -1,5 +1,7 @@
-package com.aim.advice.domain;
+package com.aim.advice.domain.balance;
 
+import com.aim.advice.domain.CreatedEntity;
+import com.aim.advice.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

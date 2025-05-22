@@ -1,4 +1,4 @@
-package com.aim.advice.domain;
+package com.aim.advice.domain.balance;
 
 import lombok.RequiredArgsConstructor;
 
