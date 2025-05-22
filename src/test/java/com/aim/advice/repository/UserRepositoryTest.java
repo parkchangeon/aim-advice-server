@@ -1,16 +1,13 @@
 package com.aim.advice.repository;
 
 import com.aim.IntegrationTestSupport;
-import com.aim.advice.domain.User;
+import com.aim.advice.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-@Transactional
 class UserRepositoryTest extends IntegrationTestSupport {
     @Autowired
     private UserRepository userRepository;
