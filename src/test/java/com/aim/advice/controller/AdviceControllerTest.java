@@ -4,12 +4,14 @@ import com.aim.advice.ControllerTestSupport;
 import com.aim.advice.domain.advice.RiskType;
 import com.aim.advice.dto.advice.AdviceRequest;
 import com.aim.advice.dto.advice.AdviceResponse;
+import com.aim.advice.dto.advice.InvestedStock;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -27,7 +29,14 @@ class AdviceControllerTest extends ControllerTestSupport {
     void requestAdvice() throws Exception {
         // given
         AdviceRequest request = AdviceRequest.of(RiskType.HIGH);
-        AdviceResponse response = AdviceResponse.of(new BigDecimal("100000.00"), new BigDecimal("0.00"));
+        AdviceResponse response = AdviceResponse.of(
+                new BigDecimal("100000.00"),
+                new BigDecimal("0.00"),
+                List.of(
+                        InvestedStock.of("AAPL", "애플", 2, new BigDecimal("30000")),
+                        InvestedStock.of("TSLA", "테슬라", 1, new BigDecimal("50000"))
+                )
+        );
         when(adviceService.requestAdvice(any(), any())).thenReturn(response);
 
         // when // then
