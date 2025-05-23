@@ -2,11 +2,13 @@ package com.aim.advice.config;
 
 import com.aim.advice.security.JwtAuthenticationFilter;
 import com.aim.advice.security.JwtUtil;
+import com.aim.advice.security.RestAccessDeniedHandler;
 import com.aim.advice.security.RestAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class WebSecurityConfig {
 
     @Bean
@@ -48,12 +51,15 @@ public class WebSecurityConfig {
                         ).permitAll()
                         .requestMatchers(
                                 "/api/v1/balance/**",
-                                "/api/v1/advice/**"
+                                "/api/v1/advice/**",
+                                "/api/v1/users/role",
+                                "/api/v1/stocks/**"
                         ).authenticated()
                         .anyRequest().denyAll()
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                        .accessDeniedHandler(new RestAccessDeniedHandler())
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil),
                         UsernamePasswordAuthenticationFilter.class

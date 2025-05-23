@@ -27,6 +27,11 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private BigDecimal balance;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+
     public BigDecimal deposit(BigDecimal amount) {
         this.balance = this.balance.add(amount);
         return this.balance;
@@ -40,12 +45,17 @@ public class User extends BaseEntity {
         return this.balance;
     }
 
+    public void updateRole(Role role) {
+        this.role = role;
+    }
+
     @Builder
-    private User(Long no, String userId, String password, BigDecimal balance) {
+    private User(Long no, String userId, String password, BigDecimal balance, Role role) {
         this.no = no;
         this.userId = userId;
         this.password = password;
         this.balance = (balance != null) ? balance : BigDecimal.ZERO;
+        this.role = (role != null) ? role : Role.USER;
     }
 
     public static User of(String userId, String password) {
@@ -62,4 +72,13 @@ public class User extends BaseEntity {
                 .balance(balance)
                 .build();
     }
+
+    public static User of(String userId, String password, Role role) {
+        return User.builder()
+                .userId(userId)
+                .password(password)
+                .role(role)
+                .build();
+    }
+
 }

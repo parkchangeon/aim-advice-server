@@ -26,7 +26,14 @@ public class AuthService {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUserId(), request.getPassword())
             );
-            String token = jwtUtil.generateToken(authentication.getName());
+            String role = authentication.getAuthorities().stream()
+                    .findFirst()
+                    .map(grantedAuthority -> {
+                        String authority = grantedAuthority.getAuthority();
+                        return authority.replace("ROLE_", "");
+                    })
+                    .orElse("USER");
+            String token = jwtUtil.generateToken(authentication.getName(), role);
             authHistoryRepository.save(AuthHistory.of(authentication.getName(), "LOGIN"));
             return LoginResponse.of(token);
         } catch (AuthenticationException e) {
