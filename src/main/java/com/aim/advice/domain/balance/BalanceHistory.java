@@ -17,10 +17,10 @@ import java.math.BigDecimal;
 public class BalanceHistory extends CreatedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long no;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_no", nullable = false)
     private User user;
 
     @Column(nullable = false)

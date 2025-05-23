@@ -18,7 +18,7 @@ public class Stock extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long no;
 
     @Column(name = "code", nullable = false, unique = true)
     private String code;
@@ -34,7 +34,8 @@ public class Stock extends BaseEntity {
     }
 
     @Builder
-    private Stock(String code, String name, BigDecimal price) {
+    private Stock(Long no, String code, String name, BigDecimal price) {
+        this.no = no;
         this.code = code;
         this.name = name;
         this.price = price;
@@ -42,6 +43,15 @@ public class Stock extends BaseEntity {
 
     public static Stock of(String code, String name, BigDecimal price) {
         return Stock.builder()
+                .code(code)
+                .name(name)
+                .price(price)
+                .build();
+    }
+
+    public static Stock of(Long no, String code, String name, BigDecimal price) {
+        return Stock.builder()
+                .no(no)
                 .code(code)
                 .name(name)
                 .price(price)
