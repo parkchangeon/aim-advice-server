@@ -1,5 +1,6 @@
 package com.aim.advice.service;
 
+import com.aim.advice.domain.user.Role;
 import com.aim.advice.domain.user.User;
 import com.aim.advice.dto.user.SignupRequest;
 import com.aim.advice.dto.user.SignupResponse;
@@ -25,5 +26,13 @@ public class UserService {
         User user = User.of(userId, encoded);
         User saved = userRepository.save(user);
         return SignupResponse.of(saved.getNo(), saved.getUserId());
+    }
+
+    @Transactional
+    public void updateRole(String userId, Role role) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.updateRole(role);
     }
 }
