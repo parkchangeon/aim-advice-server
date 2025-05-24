@@ -1,0 +1,29 @@
+spring:
+  data:
+    redis:
+      host: redis
+      port: 6379
+
+  datasource:
+    url: jdbc:mysql://mysql:3306/advice
+    username: advice_user
+    password: advice_pass
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  sql:
+    init:
+      mode: always
+
+  h2:
+    console:
+      enabled: false
+
+server:
+  port: 8080
