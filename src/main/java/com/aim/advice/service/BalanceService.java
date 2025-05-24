@@ -35,6 +35,7 @@ public class BalanceService {
         return BalanceResponse.of(newBalance);
     }
 
+    @Transactional
     public BalanceResponse inquireBalance(String userId) {
         User user = findUser(userId);
         BigDecimal balance = user.getBalance();
