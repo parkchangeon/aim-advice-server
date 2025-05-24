@@ -2,6 +2,7 @@ package com.aim.advice.controller;
 
 import com.aim.advice.ControllerTestSupport;
 import com.aim.advice.dto.balance.BalanceRequest;
+import com.aim.advice.dto.balance.BalanceResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -27,7 +28,7 @@ class BalanceControllerTest extends ControllerTestSupport {
         // given
         BalanceRequest request = BalanceRequest.of(new BigDecimal("150.00"));
         when(balanceService.deposit(anyString(), any(BigDecimal.class)))
-                .thenReturn(request.getAmount());
+                .thenReturn(BalanceResponse.of(request.getAmount()));
 
         // when // then
         mockMvc.perform(
@@ -49,7 +50,7 @@ class BalanceControllerTest extends ControllerTestSupport {
         // given
         BalanceRequest request = BalanceRequest.of(null);
         when(balanceService.deposit(anyString(), any(BigDecimal.class)))
-                .thenReturn(request.getAmount());
+                .thenReturn(BalanceResponse.of(request.getAmount()));
 
         // when // then
         mockMvc.perform(
@@ -89,7 +90,7 @@ class BalanceControllerTest extends ControllerTestSupport {
         // given
         BalanceRequest request = BalanceRequest.of(null);
         when(balanceService.deposit(anyString(), any(BigDecimal.class)))
-                .thenReturn(request.getAmount());
+                .thenReturn(BalanceResponse.of(request.getAmount()));
 
         // when // then
         mockMvc.perform(
@@ -112,7 +113,7 @@ class BalanceControllerTest extends ControllerTestSupport {
         // given
         BalanceRequest request = BalanceRequest.of(new BigDecimal("0"));
         when(balanceService.deposit(anyString(), any(BigDecimal.class)))
-                .thenReturn(request.getAmount());
+                .thenReturn(BalanceResponse.of(request.getAmount()));
 
         // when // then
         mockMvc.perform(
@@ -191,7 +192,7 @@ class BalanceControllerTest extends ControllerTestSupport {
         // given
         BalanceRequest request = BalanceRequest.of(null);
         when(balanceService.deposit(anyString(), any(BigDecimal.class)))
-                .thenReturn(request.getAmount());
+                .thenReturn(BalanceResponse.of(request.getAmount()));
 
         // when // then
         mockMvc.perform(
@@ -214,7 +215,7 @@ class BalanceControllerTest extends ControllerTestSupport {
         // given
         BalanceRequest request = BalanceRequest.of(new BigDecimal("0"));
         when(balanceService.deposit(anyString(), any(BigDecimal.class)))
-                .thenReturn(request.getAmount());
+                .thenReturn(BalanceResponse.of(request.getAmount()));
 
         // when // then
         mockMvc.perform(

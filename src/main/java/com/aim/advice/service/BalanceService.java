@@ -2,6 +2,7 @@ package com.aim.advice.service;
 
 import com.aim.advice.domain.balance.BalanceHistory;
 import com.aim.advice.domain.user.User;
+import com.aim.advice.dto.balance.BalanceResponse;
 import com.aim.advice.repository.BalanceHistoryRepository;
 import com.aim.advice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,26 +20,26 @@ public class BalanceService {
     private final BalanceHistoryRepository balanceHistoryRepository;
 
     @Transactional
-    public BigDecimal deposit(String userId, BigDecimal amount) {
+    public BalanceResponse deposit(String userId, BigDecimal amount) {
         User user = findUser(userId);
         BigDecimal newBalance = user.deposit(amount);
         balanceHistoryRepository.save(BalanceHistory.of(user, DEPOSIT, amount));
-        return newBalance;
+        return BalanceResponse.of(newBalance);
     }
 
     @Transactional
-    public BigDecimal withdraw(String userId, BigDecimal amount) {
+    public BalanceResponse withdraw(String userId, BigDecimal amount) {
         User user = findUser(userId);
         BigDecimal newBalance = user.withdraw(amount);
         balanceHistoryRepository.save(BalanceHistory.of(user, WITHDRAWAL, amount));
-        return newBalance;
+        return BalanceResponse.of(newBalance);
     }
 
-    public BigDecimal inquireBalance(String userId) {
+    public BalanceResponse inquireBalance(String userId) {
         User user = findUser(userId);
         BigDecimal balance = user.getBalance();
         balanceHistoryRepository.save(BalanceHistory.of(user, INQUIRY, balance));
-        return balance;
+        return BalanceResponse.of(balance);
     }
 
     private User findUser(String userId) {

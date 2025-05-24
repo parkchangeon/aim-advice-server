@@ -4,6 +4,7 @@ import com.aim.IntegrationTestSupport;
 import com.aim.advice.domain.balance.BalanceHistory;
 import com.aim.advice.domain.balance.TransactionType;
 import com.aim.advice.domain.user.User;
+import com.aim.advice.dto.balance.BalanceResponse;
 import com.aim.advice.repository.BalanceHistoryRepository;
 import com.aim.advice.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -35,10 +36,10 @@ class BalanceServiceTest extends IntegrationTestSupport {
         BigDecimal depositAmount = new BigDecimal("100.00");
 
         // when
-        BigDecimal newBalance = balanceService.deposit("user1", depositAmount);
+        BalanceResponse response = balanceService.deposit("user1", depositAmount);
 
         // then
-        assertThat(newBalance).isEqualByComparingTo(depositAmount);
+        assertThat(response.getBalance()).isEqualByComparingTo(depositAmount);
 
         User updatedUser = userRepository.findByUserId("user1").get();
         assertThat(updatedUser.getBalance()).isEqualByComparingTo(depositAmount);
@@ -68,10 +69,10 @@ class BalanceServiceTest extends IntegrationTestSupport {
         BigDecimal withdrawAmount = new BigDecimal("50.00");
 
         // when
-        BigDecimal newBalance = balanceService.withdraw("user1", withdrawAmount);
+        BalanceResponse response = balanceService.withdraw("user1", withdrawAmount);
 
         // then
-        assertThat(newBalance).isEqualByComparingTo(new BigDecimal("150.00"));
+        assertThat(response.getBalance()).isEqualByComparingTo(new BigDecimal("150.00"));
 
         User updatedUser = userRepository.findByUserId("user1").get();
         assertThat(updatedUser.getBalance()).isEqualByComparingTo(new BigDecimal("150.00"));
@@ -117,10 +118,10 @@ class BalanceServiceTest extends IntegrationTestSupport {
         userRepository.save(user);
 
         // when
-        BigDecimal balance = balanceService.inquireBalance("user1");
+        BalanceResponse response = balanceService.inquireBalance("user1");
 
         // then
-        assertThat(balance).isEqualByComparingTo("1000.00");
+        assertThat(response.getBalance()).isEqualByComparingTo("1000.00");
         balanceHistoryRepository.findAll().forEach(balanceHistory -> {
             assertThat(balanceHistory.getUser()).isEqualTo(user);
             assertThat(balanceHistory.getType()).isEqualTo(TransactionType.INQUIRY);
