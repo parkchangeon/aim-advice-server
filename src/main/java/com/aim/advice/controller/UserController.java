@@ -2,9 +2,9 @@ package com.aim.advice.controller;
 
 import com.aim.advice.api.ApiResponse;
 import com.aim.advice.dto.user.SignupRequest;
+import com.aim.advice.dto.user.SignupResponse;
 import com.aim.advice.dto.user.UpdateRoleRequest;
 import com.aim.advice.service.UserService;
-import com.aim.advice.dto.user.SignupResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;

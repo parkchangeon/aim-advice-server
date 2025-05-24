@@ -5,11 +5,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import static lombok.AccessLevel.PROTECTED;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
 public class AdviceRequest {
 
     @NotNull(message = "RiskType is required")

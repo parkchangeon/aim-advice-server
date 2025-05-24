@@ -2,19 +2,15 @@ package com.aim.advice.dto.advice;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Getter
-@Setter
-@NoArgsConstructor
 public class InvestedStock {
-    private String code;
-    private String name;
-    private int quantity;
-    private BigDecimal price;
+    private final String code;
+    private final String name;
+    private final int quantity;
+    private final BigDecimal price;
 
     @Builder
     private InvestedStock(String code, String name, int quantity, BigDecimal price) {

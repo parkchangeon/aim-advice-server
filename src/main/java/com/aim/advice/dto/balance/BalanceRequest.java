@@ -5,13 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
 public class BalanceRequest {
     @NotNull(message = "Amount cannot be null")
     @Min(value = 1, message = "Amount must be greater than or equal to 1")

@@ -6,13 +6,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
 public class UpdatePriceRequest {
     @NotBlank(message = "Stock code is required")
     private String code;

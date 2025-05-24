@@ -2,15 +2,11 @@ package com.aim.advice.dto.user;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
-@NoArgsConstructor
 public class SignupResponse {
-    private Long no;
-    private String userId;
+    private final Long no;
+    private final String userId;
 
     @Builder
     private SignupResponse(Long no, String userId) {
