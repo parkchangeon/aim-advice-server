@@ -52,14 +52,14 @@ public class WebSecurityConfig {
                     .requestMatchers(
                             "/api/v1/users/signup",
                             "/api/v1/auth/login",
-                            "/api/v1/auth/logout",
                             "/h2-console/**"
                     ).permitAll()
                     .requestMatchers(
                             "/api/v1/balance/**",
                             "/api/v1/advice/**",
                             "/api/v1/users/role",
-                            "/api/v1/stocks/**"
+                            "/api/v1/stocks/**",
+                            "/api/v1/auth/logout"
                     ).authenticated()
                     .anyRequest().denyAll()
             )
