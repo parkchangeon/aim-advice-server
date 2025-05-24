@@ -109,4 +109,31 @@ class BalanceServiceTest extends IntegrationTestSupport {
         assertThat(balanceHistoryRepository.findAll()).isEmpty();
     }
 
+    @Test
+    @DisplayName("사용자의 잔고를 조회하면 잔고를 반환하고 조회 내역을 저장한다.")
+    void inquireBalance() {
+        // given
+        User user = User.of("user1", "pass1234", new BigDecimal("1000.00"));
+        userRepository.save(user);
+
+        // when
+        BigDecimal balance = balanceService.inquireBalance("user1");
+
+        // then
+        assertThat(balance).isEqualByComparingTo("1000.00");
+        balanceHistoryRepository.findAll().forEach(balanceHistory -> {
+            assertThat(balanceHistory.getUser()).isEqualTo(user);
+            assertThat(balanceHistory.getType()).isEqualTo(TransactionType.INQUIRY);
+            assertThat(balanceHistory.getAmount()).isEqualByComparingTo("1000.00");
+        });
+    }
+
+    @Test
+    @DisplayName("사용자의 잔고를 조회할 때 user가 존재하지 않으면 IllegalArgumentException이 발생한다.")
+    void inquireBalanceWithNoUser() {
+        // when // then
+        assertThatThrownBy(() -> balanceService.inquireBalance("nonexistentUser"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("User not found");
+    }
 }
