@@ -10,8 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
-import static com.aim.advice.domain.balance.TransactionType.DEPOSIT;
-import static com.aim.advice.domain.balance.TransactionType.WITHDRAWAL;
+import static com.aim.advice.domain.balance.TransactionType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +20,7 @@ public class BalanceService {
 
     @Transactional
     public BigDecimal deposit(String userId, BigDecimal amount) {
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = findUser(userId);
         BigDecimal newBalance = user.deposit(amount);
         balanceHistoryRepository.save(BalanceHistory.of(user, DEPOSIT, amount));
         return newBalance;
@@ -30,10 +28,21 @@ public class BalanceService {
 
     @Transactional
     public BigDecimal withdraw(String userId, BigDecimal amount) {
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = findUser(userId);
         BigDecimal newBalance = user.withdraw(amount);
         balanceHistoryRepository.save(BalanceHistory.of(user, WITHDRAWAL, amount));
         return newBalance;
+    }
+
+    public BigDecimal inquireBalance(String userId) {
+        User user = findUser(userId);
+        BigDecimal balance = user.getBalance();
+        balanceHistoryRepository.save(BalanceHistory.of(user, INQUIRY, balance));
+        return balance;
+    }
+
+    private User findUser(String userId) {
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 }

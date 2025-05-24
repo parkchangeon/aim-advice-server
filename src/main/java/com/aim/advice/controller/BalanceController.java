@@ -6,10 +6,7 @@ import com.aim.advice.service.BalanceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
@@ -35,6 +32,12 @@ public class BalanceController {
     ) {
         BigDecimal newBalance = balanceService.withdraw(userId, balanceRequest.getAmount());
         return ApiResponse.ok(newBalance);
+    }
+
+    @GetMapping
+    public ApiResponse<BigDecimal> balance(@AuthenticationPrincipal String userId) {
+        BigDecimal balance = balanceService.inquireBalance(userId);
+        return ApiResponse.ok(balance);
     }
 
 }
