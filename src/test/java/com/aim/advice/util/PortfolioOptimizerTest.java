@@ -2,6 +2,7 @@ package com.aim.advice.util;
 
 import com.aim.advice.domain.stock.Stock;
 import com.aim.advice.dto.advice.InvestedStock;
+import com.aim.advice.dto.advice.PortfolioResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,17 +23,19 @@ class PortfolioOptimizerTest {
                 Stock.of(2L, "stockB", "B", new BigDecimal("20000")),
                 Stock.of(3L, "stockC", "C", new BigDecimal("50000"))
         );
-        BigDecimal budget = new BigDecimal("100000");
+        BigDecimal budget = new BigDecimal("10000000");
 
         // when
-        List<InvestedStock> result = PortfolioOptimizer.optimize(budget, stocks);
+        PortfolioResult portfolioResult = PortfolioOptimizer.optimize(budget, stocks);
 
         // then
-        int totalInvested = result.stream()
-                .mapToInt(s -> s.getPrice().intValue() * s.getQuantity())
-                .sum();
-        assertThat(totalInvested).isLessThanOrEqualTo(budget.intValue());
-        assertThat(result).isNotEmpty();
+        portfolioResult.getInvestedStocks().forEach(s -> {
+            assertThat(s.getPrice()).isGreaterThan(BigDecimal.ZERO);
+            assertThat(s.getQuantity()).isGreaterThan(0);
+        });
+
+        BigDecimal totalInvested = portfolioResult.getUsedAmount();
+        assertThat(totalInvested).isLessThanOrEqualTo(budget);
     }
 
     @Test
@@ -62,13 +65,15 @@ class PortfolioOptimizerTest {
         BigDecimal budget = new BigDecimal("10000");
 
         // when
-        List<InvestedStock> result = PortfolioOptimizer.optimize(budget, stocks);
+        PortfolioResult portfolioResult = PortfolioOptimizer.optimize(budget, stocks);
 
         // then
-        int totalInvested = result.stream()
-                .mapToInt(s -> s.getPrice().intValue() * s.getQuantity())
-                .sum();
-        assertThat(totalInvested).isLessThanOrEqualTo(budget.intValue());
-        assertThat(result).isNotEmpty();
+        portfolioResult.getInvestedStocks().forEach(s -> {
+            assertThat(s.getPrice()).isGreaterThan(BigDecimal.ZERO);
+            assertThat(s.getQuantity()).isGreaterThan(0);
+        });
+
+        BigDecimal totalInvested = portfolioResult.getUsedAmount();
+        assertThat(totalInvested).isLessThanOrEqualTo(budget);
     }
 }

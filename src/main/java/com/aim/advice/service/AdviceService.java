@@ -9,6 +9,7 @@ import com.aim.advice.domain.user.User;
 import com.aim.advice.dto.advice.AdviceRequest;
 import com.aim.advice.dto.advice.AdviceResponse;
 import com.aim.advice.dto.advice.InvestedStock;
+import com.aim.advice.dto.advice.PortfolioResult;
 import com.aim.advice.repository.*;
 import com.aim.advice.util.PortfolioOptimizer;
 import lombok.RequiredArgsConstructor;
@@ -49,20 +50,25 @@ public class AdviceService {
         }
 
         List<Stock> stocks = stockRepository.findAll();
-        List<InvestedStock> investedStocks = PortfolioOptimizer.optimize(investAmount, stocks);
-        BigDecimal remaining = withDrawBalance(user, investAmount);
+        PortfolioResult portfolioResult = PortfolioOptimizer.optimize(investAmount, stocks);
+
+        investAmount = portfolioResult.getUsedAmount();
+        List<InvestedStock> investedStocks = portfolioResult.getInvestedStocks();
+
+        BigDecimal remaining = withdrawBalance(user, investAmount);
         saveAdvice(user, investAmount, riskType, stocks, investedStocks, remaining);
 
         return AdviceResponse.of(investAmount, remaining, investedStocks);
     }
 
-    private BigDecimal withDrawBalance(User user, BigDecimal investAmount) {
+    private BigDecimal withdrawBalance(User user, BigDecimal investAmount) {
         BigDecimal newBalance = user.withdraw(investAmount);
         balanceHistoryRepository.save(BalanceHistory.of(user, WITHDRAWAL, investAmount));
         return newBalance;
     }
 
-    private void saveAdvice(User user, BigDecimal investAmount, RiskType riskType, List<Stock> stocks, List<InvestedStock> investedStocks, BigDecimal remaining) {
+    private void saveAdvice(User user, BigDecimal investAmount, RiskType riskType, List<Stock> stocks,
+                            List<InvestedStock> investedStocks, BigDecimal remaining) {
         Advice advice = adviceRepository.save(
                 Advice.of(user, investAmount, remaining, riskType)
         );

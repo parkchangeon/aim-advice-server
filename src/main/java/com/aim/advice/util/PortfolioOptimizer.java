@@ -2,64 +2,51 @@ package com.aim.advice.util;
 
 import com.aim.advice.domain.stock.Stock;
 import com.aim.advice.dto.advice.InvestedStock;
+import com.aim.advice.dto.advice.PortfolioResult;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class PortfolioOptimizer {
     private static final int SCALE = 2;
 
-    public static List<InvestedStock> optimize(BigDecimal budget, List<Stock> stocks) {
-        int scaledBudget = budget.multiply(BigDecimal.TEN.pow(SCALE)).intValueExact();
-        int[] dp = new int[scaledBudget + 1];
-        int[] lastUsed = new int[scaledBudget + 1];
-        Arrays.fill(lastUsed, -1);
-
-        List<Integer> scaledPrices = stocks.stream()
-                .map(stock -> stock.getPrice().multiply(BigDecimal.TEN.pow(SCALE)).intValueExact())
+    public static PortfolioResult optimize(BigDecimal budget, List<Stock> stocks) {
+        List<Stock> sorted = stocks.stream()
+                .sorted(Comparator.comparing(Stock::getPrice))
                 .toList();
 
-        boolean hasBuyableStock = scaledPrices.stream().anyMatch(price -> price <= scaledBudget);
-        if (!hasBuyableStock) {
+        List<InvestedStock> result = new ArrayList<>();
+        BigDecimal usedAmount = BigDecimal.ZERO;
+
+        for (Stock stock : sorted) {
+            if (stock.getPrice().compareTo(BigDecimal.ZERO) <= 0) continue;
+
+            BigDecimal[] divmod = budget.divideAndRemainder(stock.getPrice());
+            int quantity = divmod[0].intValue(); // 최대 매수 수량
+
+            if (quantity > 0) {
+                BigDecimal spent = stock.getPrice().multiply(BigDecimal.valueOf(quantity));
+                usedAmount = usedAmount.add(spent);
+                budget = budget.subtract(spent);
+
+                result.add(InvestedStock.of(
+                        stock.getCode(),
+                        stock.getName(),
+                        quantity,
+                        stock.getPrice()
+                ));
+            }
+
+            if (budget.compareTo(BigDecimal.ZERO) <= 0) break;
+        }
+
+        if (result.isEmpty()) {
             throw new IllegalStateException("No stocks can be bought with the given budget");
         }
 
-        for (int i = 0; i < stocks.size(); i++) {
-            int price = scaledPrices.get(i);
-            for (int j = price; j <= scaledBudget; j++) {
-                if (dp[j - price] + price > dp[j]) {
-                    dp[j] = dp[j - price] + price;
-                    lastUsed[j] = i;
-                }
-            }
-        }
-
-        Map<Long, Integer> result = new LinkedHashMap<>();
-        int remaining = Arrays.stream(dp).max().orElse(0);
-        while (remaining > 0 && lastUsed[remaining] != -1) {
-            int idx = lastUsed[remaining];
-            Stock stock = stocks.get(idx);
-            result.put(stock.getNo(), result.getOrDefault(stock.getNo(), 0) + 1);
-            remaining -= scaledPrices.get(idx);
-        }
-
-        return getInvestedStocks(stocks, result);
+        return PortfolioResult.of(result, usedAmount);
     }
 
-    private static List<InvestedStock> getInvestedStocks(List<Stock> stocks, Map<Long, Integer> result) {
-        Map<Long, Stock> stockMap = stocks.stream()
-                .collect(Collectors.toMap(Stock::getNo, Function.identity()));
-
-        return result.entrySet().stream()
-                .map(entry -> {
-                    Stock stock = stockMap.get(entry.getKey());
-                    return InvestedStock.of(stock.getCode(), stock.getName(), entry.getValue(), stock.getPrice());
-                })
-                .toList();
-    }
 }
