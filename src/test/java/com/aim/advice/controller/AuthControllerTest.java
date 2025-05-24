@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import static org.mockito.Mockito.verify;
@@ -68,12 +69,16 @@ class AuthControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.message").value("Password is required"));
     }
 
-    @DisplayName("로그아웃 요청 시 200 OK를 반환한다.")
     @Test
+    @DisplayName("로그아웃 요청 시 200 OK를 반환한다.")
     void logout() throws Exception {
         // given
         RequestPostProcessor userAuth = authentication(
-                new UsernamePasswordAuthenticationToken("user1", null)
+                new UsernamePasswordAuthenticationToken(
+                        "user1",
+                        null,
+                        java.util.List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                )
         );
 
         // when // then

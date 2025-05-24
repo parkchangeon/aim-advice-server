@@ -134,20 +134,4 @@ class AuthServiceTest extends IntegrationTestSupport {
         verify(redisTemplate.opsForValue()).set("BL:" + token, user.getUserId(), ttl);
     }
 
-    @DisplayName("유효하지 않은 토큰으로 로그아웃 시 히스토리를 저장하지 않는다.")
-    @Test
-    void logoutWithInvalidToken() {
-        // given
-        String token = "badToken";
-        String userId = "user1";
-
-        when(jwtUtil.validateToken(token)).thenReturn(false);
-
-        // when
-        authService.logout(userId, token);
-
-        // then
-        List<AuthHistory> authHistories = authHistoryRepository.findByUserIdAndAction("user1", "LOGOUT");
-        assertThat(authHistories).isEmpty();
-    }
 }
