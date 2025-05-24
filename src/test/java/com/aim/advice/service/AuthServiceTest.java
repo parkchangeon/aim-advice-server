@@ -11,11 +11,20 @@ import com.aim.advice.security.JwtUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import java.time.Duration;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class AuthServiceTest extends IntegrationTestSupport {
 
@@ -29,10 +38,17 @@ class AuthServiceTest extends IntegrationTestSupport {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private AuthService authService;
+
+    @MockitoBean
     private JwtUtil jwtUtil;
 
-    @Autowired
-    private AuthService authService;
+    @MockitoBean
+    private RedisTemplate<String, String> redisTemplate;
+
+    @MockitoBean
+    private ValueOperations<String, String> valueOperations;
+
 
 
     @DisplayName("유효한 사용자 정보로 로그인 시 JWT 토큰을 반환하고 히스토리를 저장한다.")
@@ -40,20 +56,24 @@ class AuthServiceTest extends IntegrationTestSupport {
     void login() {
         // given
         String rawPassword = "password123";
-        User user = User.of("user1", passwordEncoder.encode(rawPassword));
+        String userId = "user1";
+
+        User user = User.of(userId, passwordEncoder.encode(rawPassword));
         userRepository.save(user);
 
+        when(jwtUtil.generateToken(eq(userId), any())).thenReturn("fake.jwt.token");
+
         // when
-        LoginResponse loginResponse = authService.login(LoginRequest.of("user1", rawPassword));
+        LoginResponse loginResponse = authService.login(LoginRequest.of(userId, rawPassword));
 
         // then
         assertThat(loginResponse.getToken()).isNotBlank();
 
-        List<AuthHistory> authHistories = authHistoryRepository.findByUserIdAndAction(user.getUserId(), "LOGIN");
+        List<AuthHistory> authHistories = authHistoryRepository.findByUserIdAndAction(userId, "LOGIN");
         assertThat(authHistories).hasSize(1)
                 .extracting(AuthHistory::getUserId, AuthHistory::getAction)
                 .containsExactlyInAnyOrder(
-                        tuple(user.getUserId(), "LOGIN")
+                        tuple(userId, "LOGIN")
                 );
     }
 
@@ -83,17 +103,25 @@ class AuthServiceTest extends IntegrationTestSupport {
                 .hasMessage("Invalid credentials");
     }
 
-    @DisplayName("유효한 토큰으로 로그아웃 시 히스토리를 저장한다.")
+    @DisplayName("유효한 토큰으로 로그아웃 시 블랙리스트와 히스토리를 저장한다.")
     @Test
     void logout() {
         // given
         String rawPassword = "password123";
+        Duration ttl = Duration.ofSeconds(3600);
+
         User user = User.of("user1", passwordEncoder.encode(rawPassword));
         userRepository.save(user);
-        authService.login(LoginRequest.of("user1", rawPassword));
+
+        LoginResponse loginResponse = authService.login(LoginRequest.of("user1", rawPassword));
+        String token = loginResponse.getToken();
+
+        when(jwtUtil.validateToken(token)).thenReturn(true);
+        when(jwtUtil.getRemainingDuration(token)).thenReturn(ttl);
+        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
 
         // when
-        authService.logout(user.getUserId());
+        authService.logout(user.getUserId(), token);
 
         // then
         List<AuthHistory> authHistories = authHistoryRepository.findByUserIdAndAction(user.getUserId(), "LOGOUT");
@@ -102,6 +130,8 @@ class AuthServiceTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrder(
                         tuple(user.getUserId(), "LOGOUT")
                 );
+
+        verify(redisTemplate.opsForValue()).set("BL:" + token, user.getUserId(), ttl);
     }
 
     @DisplayName("유효하지 않은 토큰으로 로그아웃 시 히스토리를 저장하지 않는다.")
@@ -109,9 +139,12 @@ class AuthServiceTest extends IntegrationTestSupport {
     void logoutWithInvalidToken() {
         // given
         String token = "badToken";
+        String userId = "user1";
+
+        when(jwtUtil.validateToken(token)).thenReturn(false);
 
         // when
-        authService.logout(token);
+        authService.logout(userId, token);
 
         // then
         List<AuthHistory> authHistories = authHistoryRepository.findByUserIdAndAction("user1", "LOGOUT");

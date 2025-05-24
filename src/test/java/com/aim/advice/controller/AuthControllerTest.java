@@ -80,6 +80,7 @@ class AuthControllerTest extends ControllerTestSupport {
         mockMvc.perform(post("/api/v1/auth/logout")
                         .with(csrf())
                         .with(userAuth)
+                        .header("Authorization", "Bearer token")
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -87,7 +88,7 @@ class AuthControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"));
 
-        verify(authService).logout("user1");
+        verify(authService).logout("user1", "token");
     }
 
 }
