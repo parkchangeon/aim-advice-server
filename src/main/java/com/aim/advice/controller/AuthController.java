@@ -4,6 +4,7 @@ import com.aim.advice.api.ApiResponse;
 import com.aim.advice.dto.auth.LoginRequest;
 import com.aim.advice.dto.auth.LoginResponse;
 import com.aim.advice.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,8 +26,17 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ApiResponse<Void> logout(@AuthenticationPrincipal String userId) {
-        authService.logout(userId);
+    public ApiResponse<Void> logout(@AuthenticationPrincipal String userId, HttpServletRequest request) {
+        String token = extractToken(request);
+        authService.logout(userId, token);
         return ApiResponse.ok(null);
+    }
+
+    private String extractToken(HttpServletRequest request) {
+        String bearer = request.getHeader("Authorization");
+        if (bearer != null && bearer.startsWith("Bearer ")) {
+            return bearer.substring(7);
+        }
+        return null;
     }
 }

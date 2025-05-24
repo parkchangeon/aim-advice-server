@@ -4,6 +4,7 @@ import com.aim.advice.security.JwtAuthenticationFilter;
 import com.aim.advice.security.JwtUtil;
 import com.aim.advice.security.RestAccessDeniedHandler;
 import com.aim.advice.security.RestAuthenticationEntryPoint;
+import com.aim.advice.service.AuthService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,36 +35,41 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtUtil jwtUtil) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            JwtUtil jwtUtil,
+            AuthService authService
+    ) throws Exception {
+
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                // H2 콘솔을 iframe으로 띄우기 위해 frameOptions 비활성화
-                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
-                .sessionManagement(sm ->
-                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/v1/users/signup",
-                                "/api/v1/auth/login",
-                                "/api/v1/auth/logout",
-                                "/h2-console/**"
-                        ).permitAll()
-                        .requestMatchers(
-                                "/api/v1/balance/**",
-                                "/api/v1/advice/**",
-                                "/api/v1/users/role",
-                                "/api/v1/stocks/**"
-                        ).authenticated()
-                        .anyRequest().denyAll()
-                )
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(new RestAuthenticationEntryPoint())
-                        .accessDeniedHandler(new RestAccessDeniedHandler())
-                )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil),
-                        UsernamePasswordAuthenticationFilter.class
-                );
+            .csrf(AbstractHttpConfigurer::disable)
+            // H2 콘솔을 iframe으로 띄우기 위해 frameOptions 비활성화
+            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+            .sessionManagement(sm ->
+                    sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers(
+                            "/api/v1/users/signup",
+                            "/api/v1/auth/login",
+                            "/api/v1/auth/logout",
+                            "/h2-console/**"
+                    ).permitAll()
+                    .requestMatchers(
+                            "/api/v1/balance/**",
+                            "/api/v1/advice/**",
+                            "/api/v1/users/role",
+                            "/api/v1/stocks/**"
+                    ).authenticated()
+                    .anyRequest().denyAll()
+            )
+            .exceptionHandling(ex -> ex
+                    .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                    .accessDeniedHandler(new RestAccessDeniedHandler())
+            )
+            .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, authService),
+                    UsernamePasswordAuthenticationFilter.class
+            );
         return http.build();
     }
 }

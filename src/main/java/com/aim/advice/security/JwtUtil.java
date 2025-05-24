@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
 
@@ -68,13 +69,14 @@ public class JwtUtil {
         }
     }
 
-    public long getRemainingTime(String token) {
+    public Duration getRemainingDuration(String token) {
         Date expiration = Jwts.parserBuilder()
                 .setSigningKey(signingKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getExpiration();
-        return expiration.getTime() - System.currentTimeMillis();
+        return Duration.ofMillis(expiration.getTime() - System.currentTimeMillis());
     }
+
 }
