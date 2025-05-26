@@ -11,4 +11,4 @@ spring:
       path: /h2-console
 
 jwt:
-  secret: w7VmYkZQTk13R0tnUE5YS1Y2c2doQ1ZuV09tWXBUWkg=
+  secret: ${JWT_SECRET:w7VmYkZQTk13R0tnUE5YS1Y2c2doQ1ZuV09tWXBUWkg=}
