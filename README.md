@@ -103,6 +103,7 @@ docker compose up --build
 - Authorize 버튼 클릭 후 JWT 토큰 입력 시 테스트 가능
 
 ---
+
 ## 🗃 DB 정보
 
 - JDBC URL: `jdbc:mysql://mysql:3306/advice`
@@ -115,6 +116,19 @@ docker compose up --build
 > - Port: `3306`
 > - ID/PW는 동일
 ---
+
+## 🔐 JWT 시크릿
+
+본 프로젝트는 공개용으로, JWT 시크릿은 테스트용 기본값을 사용합니다.  
+운영 환경에서는 환경변수 `JWT_SECRET`을 통해 비밀 키를 주입할 수 있습니다.
+
+```yml
+jwt:
+  secret: ${JWT_SECRET:w7VmYkZQTk13R0tnUE5YS1Y2c2doQ1ZuV09tWXBUWkg=}
+```
+
+---
+
 ## 🙋‍♂️ 개발자 소개
 
 - 이름: 박찬건 (ChanGeon Park)
