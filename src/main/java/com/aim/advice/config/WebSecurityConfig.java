@@ -52,7 +52,11 @@ public class WebSecurityConfig {
                     .requestMatchers(
                             "/api/v1/users/signup",
                             "/api/v1/auth/login",
-                            "/h2-console/**"
+                            "/h2-console/**",
+                            "/swagger-ui.html",
+                            "/swagger-ui/**",
+                            "/v3/api-docs",
+                            "/v3/api-docs/**"
                     ).permitAll()
                     .requestMatchers(
                             "/api/v1/balance/**",
