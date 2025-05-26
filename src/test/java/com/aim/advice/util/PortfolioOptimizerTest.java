@@ -1,7 +1,6 @@
 package com.aim.advice.util;
 
 import com.aim.advice.domain.stock.Stock;
-import com.aim.advice.dto.advice.InvestedStock;
 import com.aim.advice.dto.advice.PortfolioResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

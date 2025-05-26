@@ -12,7 +12,7 @@ import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class JwtUtilTest {
 

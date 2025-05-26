@@ -11,7 +11,6 @@ import com.aim.advice.security.JwtUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,7 +47,6 @@ class AuthServiceTest extends IntegrationTestSupport {
 
     @MockitoBean
     private ValueOperations<String, String> valueOperations;
-
 
 
     @DisplayName("유효한 사용자 정보로 로그인 시 JWT 토큰을 반환하고 히스토리를 저장한다.")
