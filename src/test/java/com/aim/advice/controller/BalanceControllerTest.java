@@ -6,14 +6,19 @@ import com.aim.advice.dto.balance.BalanceResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -229,5 +234,35 @@ class BalanceControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("Amount must be greater than or equal to 1"));
+    }
+
+    @DisplayName("고객의 잔액을 조회한다.")
+    @Test
+    void getAvailableAdvertisements() throws Exception {
+        //given
+        RequestPostProcessor userAuth = authentication(
+                new UsernamePasswordAuthenticationToken(
+                        "user1",
+                        null,
+                        java.util.List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                )
+        );
+        BalanceResponse result = BalanceResponse.of(new BigDecimal("100.00"));
+        when(balanceService.inquireBalance(anyString())).thenReturn(result);
+
+        //when //then
+        mockMvc.perform(
+                        get("/api/v1/balance")
+                                .with(csrf())
+                                .with(userAuth)
+                                .header("Authorization", "Bearer token")
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"))
+                .andExpect(jsonPath("$.data.balance").value(100.00));
     }
 }
