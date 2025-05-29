@@ -40,8 +40,8 @@ class AdviceServiceTest extends IntegrationTestSupport {
     private BalanceHistoryRepository balanceHistoryRepository;
 
 
-    @DisplayName("위험도 HIGH로 자문을 요청하면 잔고 전체를 투자한다.")
     @Test
+    @DisplayName("위험도 HIGH로 자문을 요청하면 잔고 전체를 투자한다.")
     void requestAdviceWithHighRisk() {
         // given
         User user = userRepository.save(User.of("user1", "password", new BigDecimal("100000.00")));
@@ -77,8 +77,8 @@ class AdviceServiceTest extends IntegrationTestSupport {
         });
     }
 
-    @DisplayName("위험도 MEDIUM으로 자문을 요청하면 잔고의 절반만 투자한다.")
     @Test
+    @DisplayName("위험도 MEDIUM으로 자문을 요청하면 잔고의 절반만 투자한다.")
     void requestAdviceWithMediumRisk() {
         // given
         User user = userRepository.save(User.of("user1", "password", new BigDecimal("100000.00")));
@@ -114,8 +114,8 @@ class AdviceServiceTest extends IntegrationTestSupport {
         });
     }
 
-    @DisplayName("존재하지 않는 사용자로 자문을 요청하면 예외가 발생한다.")
     @Test
+    @DisplayName("존재하지 않는 사용자로 자문을 요청하면 예외가 발생한다.")
     void requestAdviceWithUserNotFound() {
         // given
         AdviceRequest request = AdviceRequest.of(RiskType.HIGH);
@@ -126,8 +126,8 @@ class AdviceServiceTest extends IntegrationTestSupport {
                 .hasMessage("User not found");
     }
 
-    @DisplayName("잔고가 없는 상태에서 자문을 요청하면 예외가 발생한다.")
     @Test
+    @DisplayName("잔고가 없는 상태에서 자문을 요청하면 예외가 발생한다.")
     void requestAdviceWithNoBalance() {
         // given
         User user = userRepository.save(User.of("user1", "password", BigDecimal.ZERO));
@@ -139,8 +139,8 @@ class AdviceServiceTest extends IntegrationTestSupport {
                 .hasMessage("Insufficient balance to request portfolio advice");
     }
 
-    @DisplayName("자문 요청 시 증권 가격이 잔고보다 높으면 예외가 발생한다.")
     @Test
+    @DisplayName("자문 요청 시 증권 가격이 잔고보다 높으면 예외가 발생한다.")
     void requestAdviceWithLessBalanceThanStockPrice() {
         // given
         User user = userRepository.save(User.of("user1", "password", new BigDecimal("100.00")));

@@ -20,8 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class UserControllerTest extends ControllerTestSupport {
 
-    @DisplayName("신규 회원가입을 등록한다.")
     @Test
+    @DisplayName("신규 회원가입을 등록한다.")
     void createUser() throws Exception {
         // given
         SignupRequest request = SignupRequest.of("testuser", "validPass1");
@@ -40,8 +40,8 @@ class UserControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.message").value("OK"));
     }
 
-    @DisplayName("회원가입 시 userId는 필수이다.")
     @Test
+    @DisplayName("회원가입 시 userId는 필수이다.")
     void createUserWithEmptyUserId() throws Exception {
         // given
         SignupRequest request = SignupRequest.of("", "validPass1");
@@ -58,8 +58,8 @@ class UserControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.data").doesNotExist());
     }
 
-    @DisplayName("회원가입 시 userId는 4자리 이상이어야 한다.")
     @Test
+    @DisplayName("회원가입 시 userId는 4자리 이상이어야 한다.")
     void createUserWithUserIdSizeMoreThan4() throws Exception {
         // given
         SignupRequest request = SignupRequest.of("abc", "validPass1");
@@ -76,8 +76,8 @@ class UserControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.data").doesNotExist());
     }
 
-    @DisplayName("회원가입 시 userId는 16자리 이하여야 한다.")
     @Test
+    @DisplayName("회원가입 시 userId는 16자리 이하여야 한다.")
     void createUserWithUserIdSizeLessThan16() throws Exception {
         // given
         SignupRequest request = SignupRequest.of("abcdefghijklmnopq", "validPass1");
@@ -94,8 +94,8 @@ class UserControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.data").doesNotExist());
     }
 
-    @DisplayName("회원가입 시 password는 필수이다.")
     @Test
+    @DisplayName("회원가입 시 password는 필수이다.")
     void createUserWithEmptyPassword() throws Exception {
         // given
         SignupRequest request = SignupRequest.of("test", "");
@@ -112,8 +112,8 @@ class UserControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.data").doesNotExist());
     }
 
-    @DisplayName("회원가입 시 password는 8자리 이상이어야 한다.")
     @Test
+    @DisplayName("회원가입 시 password는 8자리 이상이어야 한다.")
     void createUserWithPasswordSizeMoreThan8() throws Exception {
         // given
         SignupRequest request = SignupRequest.of("test", "validPa");
@@ -130,8 +130,8 @@ class UserControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.data").doesNotExist());
     }
 
-    @DisplayName("회원가입 시 password는 16자리 이하여야 한다.")
     @Test
+    @DisplayName("회원가입 시 password는 16자리 이하여야 한다.")
     void createUserWithPasswordSizeLessThan16() throws Exception {
         // given
         SignupRequest request = SignupRequest.of("test", "validPass12345678");
