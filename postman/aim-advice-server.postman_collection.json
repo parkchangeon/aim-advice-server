@@ -137,13 +137,50 @@
 			"response": []
 		},
 		{
+			"name": "토큰 재발급",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzQ4NDA5NTY1LCJleHAiOjE3NDg0MDk2MjV9.1Z0en5hxOieLgdURJOc15a6FHA4br7wCFOXQzOOFUoY",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"refreshToken\" : \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTc0ODQwOTU2NSwiZXhwIjoxNzQ4NDk1OTY1fQ.gFV6pGUdZtk-XEpiHPaHXcJQl0EOAuuzoJKkZ8s32Tw\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/auth/reissue",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"reissue"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "입금",
 			"request": {
 				"method": "POST",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzQ4MjE5NDMzLCJleHAiOjE3NDgzMDU4MzN9.L4WTUsJuFS_lr7UZGp_pUUM1swdaZaGhnwvWMJOeVoQ",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTc0ODQxMjIxMCwiZXhwIjoxNzQ4NDEyMjcwfQ.AGzt46pohqoADAyJPZfoTmx7lmUsjjLIEjcMlTosp30",
 						"type": "text"
 					}
 				],
@@ -180,7 +217,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzQ4MjE5NDMzLCJleHAiOjE3NDgzMDU4MzN9.L4WTUsJuFS_lr7UZGp_pUUM1swdaZaGhnwvWMJOeVoQ",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzQ4MjIxMTI1LCJleHAiOjE3NDgzMDc1MjV9.vddI9MO4Kt_rt71rhqKYSmMhaguV8sBPpHrugbqPkyw",
 						"type": "text"
 					}
 				],
