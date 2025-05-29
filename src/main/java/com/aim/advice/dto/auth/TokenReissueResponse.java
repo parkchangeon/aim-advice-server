@@ -4,18 +4,18 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class LoginResponse {
+public class TokenReissueResponse {
     private final String accessToken;
     private final String refreshToken;
 
     @Builder
-    private LoginResponse(String accessToken, String refreshToken) {
+    private TokenReissueResponse(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
 
-    public static LoginResponse of(String accessToken, String refreshToken) {
-        return LoginResponse.builder()
+    public static TokenReissueResponse of(String accessToken, String refreshToken) {
+        return TokenReissueResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();

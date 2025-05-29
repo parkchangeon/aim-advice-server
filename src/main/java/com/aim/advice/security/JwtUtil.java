@@ -20,7 +20,8 @@ public class JwtUtil {
     private String base64Secret;
 
     private Key signingKey;
-    private static final long EXP_MS = 1000 * 60 * 60 * 24;
+    private static final long ACCESS_EXP_MS = 1000 * 60 * 15;
+    private static final long REFRESH_EXP_MS = 1000 * 60 * 60 * 24;
 
     @PostConstruct
     public void init() {
@@ -34,7 +35,16 @@ public class JwtUtil {
                 .setSubject(userId)
                 .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXP_MS))
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_EXP_MS))
+                .signWith(signingKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateRefreshToken(String userId) {
+        return Jwts.builder()
+                .setSubject(userId)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXP_MS))
                 .signWith(signingKey, SignatureAlgorithm.HS256)
                 .compact();
     }

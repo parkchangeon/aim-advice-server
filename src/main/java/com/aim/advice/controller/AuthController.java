@@ -3,6 +3,8 @@ package com.aim.advice.controller;
 import com.aim.advice.api.ApiResponse;
 import com.aim.advice.dto.auth.LoginRequest;
 import com.aim.advice.dto.auth.LoginResponse;
+import com.aim.advice.dto.auth.TokenReissueRequest;
+import com.aim.advice.dto.auth.TokenReissueResponse;
 import com.aim.advice.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -30,6 +32,12 @@ public class AuthController {
         String token = extractToken(request);
         authService.logout(userId, token);
         return ApiResponse.ok(null);
+    }
+
+    @PostMapping("/reissue")
+    public ApiResponse<TokenReissueResponse> reissue(@Valid @RequestBody TokenReissueRequest request) {
+        String refreshToken = request.getRefreshToken();
+        return ApiResponse.ok(authService.reissue(refreshToken));
     }
 
     private String extractToken(HttpServletRequest request) {
