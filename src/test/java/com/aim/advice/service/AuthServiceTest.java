@@ -60,8 +60,6 @@ class AuthServiceTest extends IntegrationTestSupport {
         User user = User.of(userId, passwordEncoder.encode(rawPassword));
         userRepository.save(user);
 
-//        when(jwtUtil.generateToken(eq(userId), any())).thenReturn("fake.jwt.AccessToken");
-//        when(jwtUtil.generateRefreshToken(eq(userId))).thenReturn("fake.jwt.RefreshToken");
         when(redisTemplate.opsForValue()).thenReturn(valueOperations);
         when(valueOperations.get("RT:" + userId)).thenReturn("fake.jwt.RefreshToken");
 
